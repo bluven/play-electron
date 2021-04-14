@@ -29,6 +29,12 @@
         "dmg"
       ]
     },
+    "linux": {
+      "artifactName": "${productName}_setup_${version}.${ext}",
+      "target": [
+        "AppImage"
+      ]
+    },
     "win": {
       "target": [
         {
