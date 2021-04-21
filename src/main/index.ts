@@ -25,21 +25,25 @@ let win = null
 
 class createWin {
   // 创建浏览器窗口
-  constructor () {
+  constructor() {
     win = new BrowserWindow({
-      width: 330,
-      height: 700,
+      width: 1080,
+      height: 1080,
       webPreferences: {
         nodeIntegration: true,
         enableRemoteModule: true,
       },
     })
-  
+
     const URL = is_dev
       ? `http://localhost:${process.env.PORT}` // vite 启动的服务器地址
       : `file://${join(__dirname, '../../dist/render/index.html')}` // vite 构建后的静态文件地址
-  
+
     win.loadURL(URL)
+
+    if (is_dev) {
+      win.webContents.openDevTools();
+    }
   }
 }
 
@@ -57,3 +61,4 @@ app.on('activate', () => {
     new createWin()
   }
 })
+
