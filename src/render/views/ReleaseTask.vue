@@ -1,14 +1,14 @@
 <template>
   <el-table :data="tasks" style="width: 100%">
     <el-table-column prop="name" label="名称">
-      <template v-slot="scope">
+      <template v-slot="{ row: task }">
         <el-tooltip
           class="item"
           effect="dark"
           placement="top"
-          :content="scope.row.id.toString()"
+          :content="task.id.toString()"
         >
-          <span>{{ scope.row.name }}</span>
+          <span>{{ task.name }}</span>
         </el-tooltip>
       </template>
     </el-table-column>
@@ -16,10 +16,10 @@
     <el-table-column prop="namespace" label="Namespace"> </el-table-column>
     <el-table-column prop="status" label="状态"> </el-table-column>
     <el-table-column prop="edge_names" label="节点">
-      <template v-slot="scope">
+      <template v-slot="{ row: task }">
         <el-tag
           :key="edge"
-          v-for="edge in edgeNames(scope.row)"
+          v-for="edge in edgeNames(task)"
           :disable-transitions="false"
         >
           {{ edge }}
@@ -27,22 +27,34 @@
       </template>
     </el-table-column>
     <el-table-column label="删除操作?">
-      <template v-slot="scope">
-        {{ scope.row.for_deletion == 1 ? "是" : "否" }}
+      <template v-slot="{ row: task }">
+        {{ task.for_deletion == 1 ? "是" : "否" }}
       </template>
     </el-table-column>
     <el-table-column label="开始时间">
-      <template v-slot="scope">
-        {{ scope.row.start_time.toJSON() }}
+      <template v-slot="{ row: task }">
+        {{ task.start_time.toJSON() }}
+      </template>
+    </el-table-column>
+    <el-table-column fixed="right" label="操作" width="100">
+      <template v-slot="{ row: task }">
+        <el-button @click="openSubTasks(task)" type="text" size="small"
+          >查看子任务
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
+  <sub-release-tasks ref="subTasks"></sub-release-tasks>
 </template>
 
 <script>
 import { loadTasks } from "../database";
+import SubReleaseTasks from "./SubReleaseTasks.vue";
 
 export default {
+  components: {
+    SubReleaseTasks,
+  },
   data() {
     return {
       tasks: [],
@@ -51,6 +63,10 @@ export default {
   methods: {
     edgeNames(task) {
       return JSON.parse(task.edge_names || "[]");
+    },
+    openSubTasks(taskID) {
+      console.log(Object.keys(this.$refs.subTasks));
+      this.$refs.subTasks.open();
     },
   },
   async mounted() {
