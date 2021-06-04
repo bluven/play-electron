@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="标题"
-    :visible="true"
+    v-model="opened"
     :show-close="false"
     @open="handleDialogOpen"
     @close="handleDialogClose"

@@ -50,13 +50,16 @@
 <script>
 import { loadTasks } from "../database";
 import SubReleaseTasks from "./SubReleaseTasks.vue";
+import TestDialog from "./TestDialog.vue";
 
 export default {
   components: {
     SubReleaseTasks,
+    TestDialog,
   },
   data() {
     return {
+      dialogVisible: false,
       tasks: [],
     };
   },
@@ -65,8 +68,14 @@ export default {
       return JSON.parse(task.edge_names || "[]");
     },
     openSubTasks(taskID) {
-      console.log(Object.keys(this.$refs.subTasks));
       this.$refs.subTasks.open();
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then((_) => {
+          done();
+        })
+        .catch((_) => {});
     },
   },
   async mounted() {
